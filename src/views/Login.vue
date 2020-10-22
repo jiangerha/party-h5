@@ -89,7 +89,7 @@ export default {
             height: 98px;
             padding: 0 24px;
             line-height: 98px;
-            >>> .van-field__left-icon{
+            ::v-deep .van-field__left-icon{
                 margin-right: 24px;
             }
         }
