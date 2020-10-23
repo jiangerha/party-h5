@@ -21,6 +21,7 @@
       </van-popup>
       <van-field
         v-model="formData.comment"
+        clearable
         name="备注信息"
         label="备注信息："
         placeholder="这里填写备注信息"

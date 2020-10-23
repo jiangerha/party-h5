@@ -43,6 +43,11 @@ const routes = [
     path: '/checkForm',
     name: 'CheckForm',
     component: () => import(/* webpackChunkName: "CheckForm" */ '../views/CheckForm.vue')
+  },
+  {
+    path: '/organTransfer',
+    name: 'OrganTransfer',
+    component: () => import(/* webpackChunkName: "OrganTransfer" */ '../views/OrganTransfer.vue')
   }
 ]
 
