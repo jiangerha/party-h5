@@ -11,10 +11,9 @@
         />
     </form>
     <van-divider :style="{ borderColor: '#D6D6D6'}"/>
-    <van-pull-refresh v-if="list.length !== 0" class="content-container" v-model="refreshing" @refresh="onRefresh">
+    <van-pull-refresh v-if="!showEmpty" class="content-container" v-model="refreshing" @refresh="onRefresh">
         <van-list
             class="content-list"
-            v-if="list.length"
             v-model="loading"
             :finished="finished"
             finished-text="没有更多了"
@@ -28,15 +27,15 @@
                                 <span @click="goDetailPage(idx)">查看详情</span>
                             </template>
                         </van-cell>
-                        <van-cell title="会议主题：" :value="item.theme" />
-                        <van-cell title="开展时间：" :value="item.time" />
-                        <van-cell title="抽查状态：" :value="item.status" />
+                        <van-cell title="会议主题：" :value="item.meetingTheme" />
+                        <van-cell title="开展时间：" :value="item.startTime" />
+                        <van-cell title="抽查状态：" :value="item.status === '0' ? '已指派' : item.status === '1' ? '已录入' : ''" />
                     </van-cell-group>
                 </template>
             </van-cell>
         </van-list>
     </van-pull-refresh>
-    <van-empty v-if="list.length === 0" description="暂无数据" />
+    <van-empty v-if="showEmpty" description="暂无数据" />
   </div>
 </template>
 
@@ -57,10 +56,17 @@ export default {
         searchVal:'',//搜索内容
         count:0,//数据总数
         currentPage:0,//当前页
+        initQuery:false,
+      }
+  },
+  computed:{
+      showEmpty(){
+          return this.initQuery && this.list.length === 0;
       }
   },
   methods: {
     getMeetingData() {
+        this.initQuery = true;
         const getData = () => {
             $axios.postWithLoading('/app/meeting/page', {
                 "limit": 10,

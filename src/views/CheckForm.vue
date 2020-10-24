@@ -5,8 +5,8 @@
         class="select-item"
         readonly
         clickable
-        name="result"
-        :value="formData.result"
+        name="检查结果"
+        :value="formData.state"
         label="检查结果："
         placeholder="请选择检查结果"
         @click="showResult = true"
@@ -20,7 +20,7 @@
         />
       </van-popup>
       <van-field
-        v-model="formData.comment"
+        v-model="formData.extra"
         clearable
         name="备注信息"
         label="备注信息："
@@ -28,7 +28,7 @@
       />
       <van-cell title="上传照片：" class="img-upload">
         <template #label>
-            <van-uploader v-model="fileList" max-count=1 />
+            <van-uploader v-model="formData.photo" max-count=3 />
         </template>
       </van-cell>
       <div class="footer">
@@ -42,6 +42,7 @@
 
 <script>
 // @ is an alias to /src
+import $axios from '@/utils/httpUtil';
 const resultList = ['正常', '异常'];
 export default {
   name: 'CheckForm',
@@ -51,18 +52,28 @@ export default {
       return{
         showResult:false,
         formData:{
-            result:""
+            state:"",
+            extra:"",
+            photo:[],
+            meetingId:(((this.$router.history || {}).current || {}).params || {}).id
         },
         resultList,
-        fileList:[]
       }
   },
   methods: {
       onSubmit(){
-
+        $axios.postWithLoading('/app/check/add', this.formData).then(res => {
+            Toast.success("提交成功！");
+            setTimeout(() => {
+              window.location.hash = '/checkEntry';
+            }, 500)
+        }).catch(err => {
+            console.log(err)       
+        })
       },
-      onSelecResult(){
-
+      onSelecResult(val){
+        this.showResult = false;
+        this.formData.state = val;
       }
   }
 }

@@ -1,12 +1,12 @@
 <template>
   <div class="check-entry-page">
-    <van-pull-refresh class="content-container" v-model="refreshing" @refresh="onRefresh">
+    <van-pull-refresh v-if="!showEmpty" class="content-container" v-model="refreshing" @refresh="onRefresh">
         <van-list
             class="content-list"
             v-model="loading"
             :finished="finished"
             finished-text="没有更多了"
-            @load="onLoad"
+            @load="getCheckData"
         >
             <van-cell class="content-item" v-for="(item, idx) in list" :key="idx">
                 <template>
@@ -16,19 +16,20 @@
                                 <span @click="onCheck(idx)">录入</span>
                             </template>
                         </van-cell>
-                        <van-cell title="会议主题：" :value="item.theme" />
-                        <van-cell title="开展时间：" :value="item.time" />
+                        <van-cell title="会议主题：" :value="item.meetingTheme" />
+                        <van-cell title="开展时间：" :value="item.startTime" />
                     </van-cell-group>
                 </template>
             </van-cell>
         </van-list>
     </van-pull-refresh>
+    <van-empty v-if="showEmpty" description="暂无数据" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-
+import $axios from '@/utils/httpUtil';
 export default {
   name: 'OrganActivity',
   components: {
@@ -39,29 +40,44 @@ export default {
         loading: false,
         finished: false,
         refreshing: false,
-        searchVal:'',//搜索内容
+        currentPage:0,
+        count:0,
+        initQuery:false,
+      }
+  },
+  computed:{
+      showEmpty(){
+          return this.initQuery && this.list.length === 0;
       }
   },
   methods: {
-    onLoad() {
-      setTimeout(() => {
-        if (this.refreshing) {
-          this.list = [];
-          this.refreshing = false;
+    getCheckData() {
+        this.initQuery = true;
+        const getData = () => {
+            $axios.postWithLoading('/app/check/page', {
+                "limit": 10,
+                "page": this.currentPage || 1,
+            }).then(res => {
+                this.count = res.data.count;
+                (res.data.pageData || []).length && this.list.push(res.data.pageData);
+                this.currentPage = res.data.pageNow;
+            }).catch(err => {
+                console.log(err)       
+            })
         }
+        setTimeout(() => {
+            if (this.refreshing) {
+                this.list = [];
+                this.refreshing = false;
+            }
 
-        for (let i = 0; i < 10; i++) {
-          this.list.push({
-              theme:"学“四史”，明大志，为先锋",
-              time:"2020-10-09 10:30"
-          });
-        }
-        this.loading = false;
+            getData();
+            this.loading = false;
 
-        if (this.list.length >= 40) {
-          this.finished = true;
-        }
-      }, 1000);
+            if (this.list.length >= this.count) {
+            this.finished = true;
+            }
+        }, 1000);
     },
     onRefresh() {
       // 清空列表数据
@@ -70,11 +86,10 @@ export default {
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
       this.loading = true;
-      this.onLoad();
+      this.getCheckData();
     },
     onCheck(idx){
-        console.log(idx, '0')
-        alert('check')
+        window.location.hash = `/checkForm/${idx}`
     },
   }
 }
