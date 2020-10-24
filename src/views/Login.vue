@@ -39,6 +39,9 @@
 
 <script>
 // @ is an alias to /src
+import $axios from '@/utils/httpUtil';
+import Cookies from 'js-cookie';
+import { Toast } from 'vant';
 export default {
   name: 'Login',
   data(){
@@ -49,14 +52,19 @@ export default {
           }
       }
   },
-  components: {
-  },
   methods:{
       loginFunc(){
-          
-
-      }
-  }
+            $axios.postWithLoading('/app/login', this.userInfo).then(res => {
+                Toast.success("登录成功");
+                Cookies.set('token', res.data);
+                setTimeout(() => {
+                    this.$router.push('/personal')
+                }, 1000)
+            }).catch(err => {
+                console.log(err)       
+            })
+        }
+    }
 }
 </script>
 
