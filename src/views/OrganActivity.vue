@@ -11,13 +11,14 @@
         />
     </form>
     <van-divider :style="{ borderColor: '#D6D6D6'}"/>
-    <van-pull-refresh class="content-container" v-model="refreshing" @refresh="onRefresh">
+    <van-pull-refresh v-if="list.length !== 0" class="content-container" v-model="refreshing" @refresh="onRefresh">
         <van-list
             class="content-list"
+            v-if="list.length"
             v-model="loading"
             :finished="finished"
             finished-text="没有更多了"
-            @load="onLoad"
+            @load="getMeetingData"
         >
             <van-cell class="content-item" v-for="(item, idx) in list" :key="idx">
                 <template>
@@ -35,12 +36,14 @@
             </van-cell>
         </van-list>
     </van-pull-refresh>
+    <van-empty v-if="list.length === 0" description="暂无数据" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-
+import $axios from '@/utils/httpUtil';
+import { Toast } from 'vant';
 export default {
   name: 'OrganActivity',
   components: {
@@ -52,26 +55,42 @@ export default {
         finished: false,
         refreshing: false,
         searchVal:'',//搜索内容
+        count:0,//数据总数
+        currentPage:0,//当前页
       }
   },
   methods: {
-    onLoad() {
+    getMeetingData() {
+        const getData = () => {
+            $axios.postWithLoading('/app/meeting/page', {
+                "limit": 10,
+                "page": this.currentPage || 1,
+                "search": this.searchVal
+            }).then(res => {
+                this.count = res.data.count;
+                (res.data.pageData || []).length && this.list.push(res.data.pageData);
+                this.currentPage = res.data.pageNow;
+            }).catch(err => {
+                console.log(err)       
+            })
+        }
       setTimeout(() => {
         if (this.refreshing) {
           this.list = [];
           this.refreshing = false;
         }
 
-        for (let i = 0; i < 10; i++) {
-          this.list.push({
-              theme:"学“四史”，明大志，为先锋",
-              time:"2020-10-09 10:30",
-              status:"已指派",
-          });
-        }
+        // for (let i = 0; i < 10; i++) {
+        //   this.list.push({
+        //       theme:"学“四史”，明大志，为先锋",
+        //       time:"2020-10-09 10:30",
+        //       status:"已指派",
+        //   });
+        // }
+        getData();
         this.loading = false;
 
-        if (this.list.length >= 40) {
+        if (this.list.length >= this.count) {
           this.finished = true;
         }
       }, 1000);
@@ -83,10 +102,12 @@ export default {
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
       this.loading = true;
-      this.onLoad();
+      this.getMeetingData();
     },
     onSearch(val){
-        alert(val)
+        this.currentPage = 0;
+        this.list = [];
+        this.getMeetingData();
     },
     onCancel(){
         
