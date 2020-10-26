@@ -7,7 +7,7 @@
     @click-left="onClickLeft"
     />
     <div class="main-content">
-        <van-cell class="detail-title" :value="detailData.title" />
+        <van-cell class="detail-title" :value="detailData.meetingTheme" />
         <van-cell-group class="meet-content">
             <van-cell title="会议类型：" :value="detailData.meetingType" />
             <van-cell title="开展时间：" :value="detailData.startTime" />
@@ -24,8 +24,8 @@
         <van-cell class="plan-content">
             <template #title>
                 <span class="custom-title">计划内容：</span>
-                <div class="label-content">
-                    {{detailData.content}}
+                <div class="label-content" ref="planDom">
+                    <!-- {{detailData.content}} -->
                     <!-- <div>1.集中学习《中国共产党基层组织选举工作条例</div>
                     <div>2.学习党史</div>
                     <div>3.主题交流研讨</div> -->
@@ -45,9 +45,7 @@ export default {
   },
   data(){
       return{
-          detailData:{
-              title:"机关党委党委组织部支部-学“四史”，明大志，为先锋明大志，为先锋"
-          },
+          detailData:{},
           id:(((this.$router.history || {}).current || {}).params || {}).id
       }
   },
@@ -58,6 +56,7 @@ export default {
       getDetailInfo(){
           $axios.postWithLoading('/app/meeting/detail', {id:this.id}).then(res => {
               this.detailData = res.data;
+              this.$refs.planDom.innerHTML = this.detailData.content;
           }).catch(err => {
               console.log(err)       
           })
@@ -135,9 +134,11 @@ export default {
             line-height: 40px;
         }
         .label-content{
-            line-height: 48px;
-            color: #333;
             padding-top: 20px;
+            color: #333!important;
+            font-size: 28px!important;
+            line-height: 48px!important;
+            font-family: Microsoft YaHei!important;
         }
     }
 }

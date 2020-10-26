@@ -13,7 +13,7 @@
                     <van-cell-group>
                         <van-cell class="item-title" title="操作">
                             <template #default>
-                                <span @click="onCheck(idx)">录入</span>
+                                <span @click="onCheck(item.meetingId)">录入</span>
                             </template>
                         </van-cell>
                         <van-cell title="会议主题：" :value="item.meetingTheme" />
@@ -50,6 +50,11 @@ export default {
           return this.initQuery && this.list.length === 0;
       }
   },
+  watch:{
+      list(val, newVal){
+          console.log(val, newVal, '------')
+      }
+  },
   methods: {
     getCheckData() {
         this.initQuery = true;
@@ -59,7 +64,7 @@ export default {
                 "page": this.currentPage || 1,
             }).then(res => {
                 this.count = res.data.count;
-                (res.data.pageData || []).length && this.list.push(res.data.pageData);
+                (res.data.pageData || []).length && (this.list = this.list.concat(res.data.pageData));
                 this.currentPage = res.data.pageNow;
             }).catch(err => {
                 console.log(err)       
@@ -75,7 +80,7 @@ export default {
             this.loading = false;
 
             if (this.list.length >= this.count) {
-            this.finished = true;
+                this.finished = true;
             }
         }, 1000);
     },

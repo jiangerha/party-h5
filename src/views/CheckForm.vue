@@ -28,7 +28,7 @@
       />
       <van-cell title="上传照片：" class="img-upload">
         <template #label>
-            <van-uploader v-model="formData.photo" max-count=3 />
+            <!-- <van-uploader v-model="formData.photo" max-count=3 /> -->
         </template>
       </van-cell>
       <div class="footer">
@@ -43,6 +43,7 @@
 <script>
 // @ is an alias to /src
 import $axios from '@/utils/httpUtil';
+import { Toast } from 'vant';
 const resultList = ['正常', '异常'];
 export default {
   name: 'CheckForm',
@@ -54,7 +55,7 @@ export default {
         formData:{
             state:"",
             extra:"",
-            photo:[],
+            photo:'',
             meetingId:(((this.$router.history || {}).current || {}).params || {}).id
         },
         resultList,
@@ -63,10 +64,12 @@ export default {
   methods: {
       onSubmit(){
         $axios.postWithLoading('/app/check/add', this.formData).then(res => {
-            Toast.success("提交成功！");
-            setTimeout(() => {
-              window.location.hash = '/checkEntry';
-            }, 500)
+            if(res.code === 0){
+              Toast.success("提交成功！");
+              setTimeout(() => {
+                window.location.hash = '/checkEntry';
+              }, 500)
+            }
         }).catch(err => {
             console.log(err)       
         })

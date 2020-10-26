@@ -24,7 +24,7 @@
                     <van-cell-group>
                         <van-cell class="item-title" title="组织生活">
                             <template #default>
-                                <span @click="goDetailPage(idx)">查看详情</span>
+                                <span @click="goDetailPage(item.meetingId)">查看详情</span>
                             </template>
                         </van-cell>
                         <van-cell title="会议主题：" :value="item.meetingTheme" />
@@ -69,12 +69,12 @@ export default {
         this.initQuery = true;
         const getData = () => {
             $axios.postWithLoading('/app/meeting/page', {
-                "limit": 10,
-                "page": this.currentPage || 1,
+                "limit": 5,
+                "page": this.currentPage + 1,
                 "search": this.searchVal
             }).then(res => {
                 this.count = res.data.count;
-                (res.data.pageData || []).length && this.list.push(res.data.pageData);
+                (res.data.pageData || []).length && (this.list = this.list.concat(res.data.pageData));
                 this.currentPage = res.data.pageNow;
             }).catch(err => {
                 console.log(err)       
@@ -86,16 +86,8 @@ export default {
           this.refreshing = false;
         }
 
-        // for (let i = 0; i < 10; i++) {
-        //   this.list.push({
-        //       theme:"学“四史”，明大志，为先锋",
-        //       time:"2020-10-09 10:30",
-        //       status:"已指派",
-        //   });
-        // }
         getData();
         this.loading = false;
-
         if (this.list.length >= this.count) {
           this.finished = true;
         }
