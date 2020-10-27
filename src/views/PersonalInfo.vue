@@ -43,13 +43,22 @@
         :rules="[{ required: true, message: '请输入民族' }]"
       />
       <van-field
-        v-model="infoData.memberProvince"
-        :readonly="!isEdit"
+        readonly
+        clickable
         name="籍贯"
+        :value="infoData.memberProvince"
         label="籍贯："
         placeholder="请输入籍贯"
-        :rules="[{ required: true, message: '请输入籍贯' }]"
+        @click="isEdit ? showProvincePicker = true : null"
       />
+      <van-popup v-if="isEdit" v-model="showProvincePicker" position="bottom">
+        <van-area
+          :area-list="areaList"
+          :columns-num="2"
+          @confirm="onPickProvince"
+          @cancel="showProvincePicker = false"
+        />
+      </van-popup>
       <van-field
         readonly
         clickable
@@ -237,6 +246,7 @@
 // @ is an alias to /src
 import $axios from '@/utils/httpUtil';
 import moment from 'moment';
+import areaList from '@/utils/area'
 import { Toast } from 'vant';
 const educationList = ['本科', '硕士研究生', '博士研究生', '其他'];
 const genderList = ['男', '女'];
@@ -257,6 +267,7 @@ export default {
             memberIdentity:'',
             memberDegree:''
           },
+          showProvincePicker:false,
           showBirthPicker:false,
           showJoinPicker:false,
           showFomalPicker:false,
@@ -267,6 +278,7 @@ export default {
           showGender:false,//性别
           showMemberUnit:false,//行政机构
           genderList,
+          areaList,
           memberJobList,
           btnText:"",//按钮文字
           maxDate:new Date(),
@@ -320,6 +332,12 @@ export default {
         this.showMemberJob = false;
         this.infoData.memberJob = val;
       },
+      onPickProvince(data){
+        this.showProvincePicker = false;
+        console.log(data)
+        this.infoData.memberProvince = data[0].name;
+        this.infoData.memberCity = data[1].name;
+      },
       onPickBirthDay(val){
         this.showBirthPicker = false;
         this.infoData.memberBirthday = moment(val).format('YYYY-MM-DD');
@@ -342,7 +360,7 @@ export default {
           this.btnText = '提交';
           return;
         }else{
-          const fields = ["authNumber", "jobNumber", "memberAddress", "memberBirthday", "memberCity", "memberDegree", "memberEthnicity", "memberJob", "memberMailbox", "memberName", "memberPhoneNumber", "memberProvince","memberSex","memberUnit"]
+          const fields = ["authNumber", "jobNumber", "memberAddress", "memberBirthday", "memberCity", "memberDegree", "memberEthnicity", "memberJob", "memberMailbox", "memberName", "memberPhoneNumber", "memberProvince", "memberCity","memberSex","memberUnit"]
           let submitData = {};
           Object.keys(this.infoData).map(k => {
             fields.indexOf(k) > -1 && (submitData[k] = this.infoData[k]);
