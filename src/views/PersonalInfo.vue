@@ -29,6 +29,7 @@
         <van-picker
           show-toolbar
           :columns="genderList"
+          :default-index="genderList.indexOf(infoData.memberSex)"
           @confirm="onSelectGender"
           @cancel="showGender = false"
         />
@@ -131,6 +132,89 @@
         placeholder="请选择文化程度"
         @click="isEdit ? showEduc = true : null"
       />
+      <van-field
+        v-model="infoData.memberAddress"
+        :readonly="!isEdit"
+        name="家庭住址"
+        label="家庭住址："
+        placeholder="请输入家庭住址"
+        :rules="[{ required: true, message: '请输入家庭住址' }]"
+      />
+      <van-field
+        v-model="infoData.memberJob"
+        readonly
+        clickable
+        name="人员类别"
+        label="人员类别："
+        placeholder="请选择人员类别"
+        @click="isEdit ? showMemberJob = true : null"
+        :rules="[{ required: true, message: '请选择人员类别' }]"
+      />
+      <van-popup v-if="isEdit" v-model="showMemberJob" position="bottom">
+        <van-picker
+          show-toolbar
+          :columns="memberJobList"
+          @confirm="onSelectMemberJob"
+          @cancel="showMemberJob = false"
+        />
+      </van-popup>
+      <van-field
+        v-model="infoData.memberMailbox"
+        :readonly="!isEdit"
+        name="邮箱"
+        label="邮箱："
+        placeholder="请输入邮箱"
+        :rules="[{ required: true, message: '请输入邮箱' }]"
+      />
+      <van-field
+        v-model="unitName"
+        readonly
+        clickable
+        name="行政机构"
+        label="行政机构："
+        placeholder="请选择行政机构"
+        :rules="[{ required: true, message: '请选择行政机构' }]"
+        @click="isEdit ? showMemberUnit = true : null"
+      />
+      <van-popup v-if="isEdit" v-model="showMemberUnit" position="bottom">
+        <van-picker
+          show-toolbar
+          :default-index="defaultMemberUnit"
+          :columns="unitData"
+          @confirm="onSelectMemberUnit"
+          @cancel="showMemberUnit = false"
+        />
+      </van-popup>
+      <van-field
+        v-model="infoData.memberIsLeader"
+        :readonly="!isEdit"
+        name="是否干部"
+        label="是否干部："
+        placeholder="请选择是否干部"
+        :rules="[{ required: true, message: '请选择是否干部' }]"
+      />
+      <van-field
+        v-model="infoData.jobNumber"
+        :readonly="!isEdit"
+        name="工号"
+        label="工号："
+        placeholder="请输入工号"
+        :rules="[{ required: true, message: '请输入工号' }]"
+      />
+      <van-field
+        v-model="infoData.authNumber"
+        :readonly="!isEdit"
+        name="统一身份认证号码"
+        label="统一身份认证号码："
+        placeholder="请输入统一身份认证号码"
+        :rules="[{ required: true, message: '请输入统一身份认证号码' }]"
+      />
+      <van-field
+        v-model="infoData.fee"
+        :readonly="!isEdit"
+        name="党费标准"
+        label="党费标准："
+      />
       <van-popup v-if="isEdit" v-model="showEduc" position="bottom">
         <van-picker
           show-toolbar
@@ -154,8 +238,9 @@
 import $axios from '@/utils/httpUtil';
 import moment from 'moment';
 import { Toast } from 'vant';
-const educationList = ['本科', '硕士研究生', '博士研究生'];
+const educationList = ['本科', '硕士研究生', '博士研究生', '其他'];
 const genderList = ['男', '女'];
+const memberJobList = ['在职教职工', '离退休教职工', '本科生', '硕士研究生', '博士研究生', '其他'];
 export default {
   name: 'Personal',
   data(){
@@ -176,17 +261,22 @@ export default {
           showJoinPicker:false,
           showFomalPicker:false,
           showEduc:false,//文化程度
+          showMemberJob:false,//人员类别
           educationList,//教育程度list
-          isEdit:false,//是否编辑
+          isEdit:true,//是否编辑
           showGender:false,//性别
+          showMemberUnit:false,//行政机构
           genderList,
+          memberJobList,
           btnText:"",//按钮文字
           maxDate:new Date(),
           minDate: new Date(1900, 1, 1),
+          unitData:[],//行政机构下拉数据
       }
   },
   created(){
     this.getDataInfo();
+    this.getUnitData();
   },
   computed:{
     orgText(){
@@ -197,6 +287,14 @@ export default {
     statusText(){
       const infoData = this.infoData;
       return infoData.auditStatus === 0 ? '审核中' : infoData.auditStatus === 1 ? '已通过' : infoData.auditStatus === 2 ? '已驳回' : '';
+    },
+    unitName(){
+      return ((this.unitData.filter(i => i.id === this.infoData.memberUnit) || [])[0] || {}).text;
+    },
+    defaultMemberUnit(){
+      let idx = 0;
+      this.unitData.filter((i, index) => i.id === this.infoData.memberUnit && (idx = index));
+      return idx;
     }
   },
   methods:{
@@ -205,11 +303,22 @@ export default {
        */
       getDataInfo(){
         $axios.postWithLoading('/app/member/detail').then(res => {
-              this.infoData = res.data;
-              this.btnText = this.infoData.auditStatus === 0 ? '' : '申请修改个人信息';
+            this.infoData = res.data;
+            this.btnText = this.infoData.auditStatus === 0 ? '' : '申请修改个人信息';
           }).catch(err => {
               console.log(err)       
           })
+      },
+      getUnitData(){
+        $axios.postWithLoading('/app/member/unit').then(res => {
+            res.code === 0 && (this.unitData = (res.data || []).map(i => ({...i, text:i.unitName})));
+          }).catch(err => {
+              console.log(err)       
+          })
+      },
+      onSelectMemberJob(val){
+        this.showMemberJob = false;
+        this.infoData.memberJob = val;
       },
       onPickBirthDay(val){
         this.showBirthPicker = false;
@@ -222,6 +331,10 @@ export default {
       onPickFomalDate(val){
         this.showFomalPicker = false;
         this.infoData.memberFomalDate = moment(val).format('YYYY-MM-DD');
+      },
+      onSelectMemberUnit(data){
+        this.showMemberUnit = false;
+        this.infoData.memberUnit = data.id;
       },
       onSubmit(){
         if(!this.isEdit){
