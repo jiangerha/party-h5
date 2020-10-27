@@ -102,9 +102,9 @@ export default {
               }
         });
     },
-    onDelete(data, idxData){
-      this.imgUrlList.splice(idxData.index, 1);
-    }
+      onDelete(data, idxData){
+        this.imgUrlList.splice(idxData.index, 1);
+      }
   }
 }
 </script>
