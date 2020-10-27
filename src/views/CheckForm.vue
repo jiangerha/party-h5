@@ -28,7 +28,7 @@
       />
       <van-cell title="上传照片：" class="img-upload">
         <template #label>
-            <!-- <van-uploader v-model="formData.photo" max-count=3 /> -->
+            <van-uploader v-model="photo" :after-read="onRead" @delete="onDelete" max-count=3 />
         </template>
       </van-cell>
       <div class="footer">
@@ -52,10 +52,11 @@ export default {
   data(){
       return{
         showResult:false,
+        photo:[],
+        imgUrlList:[],
         formData:{
             state:"",
             extra:"",
-            photo:'',
             meetingId:(((this.$router.history || {}).current || {}).params || {}).id
         },
         resultList,
@@ -63,7 +64,10 @@ export default {
   },
   methods: {
       onSubmit(){
-        $axios.postWithLoading('/app/check/add', this.formData).then(res => {
+        $axios.postWithLoading('/app/check/add', {
+          ...this.formData,
+          photo:this.imgUrlList.join(',')
+        }).then(res => {
             if(res.code === 0){
               Toast.success("提交成功！");
               setTimeout(() => {
@@ -77,7 +81,30 @@ export default {
       onSelecResult(val){
         this.showResult = false;
         this.formData.state = val;
-      }
+      },
+      onRead(file) {
+         let formData = new FormData(); 
+      　　formData.append('file', file.file); 
+      　　$axios.postWithLoading('/app/file/upload', formData, {
+          headers:{
+            'Content-Type':'multipart/form-data'
+          },
+          transformRequest: [
+            function transformRequest(){
+              return formData
+            }
+          ]
+        }).then(res => {
+              if(res.code === 0){
+                this.imgUrlList.push(res.data);
+              }else{
+                Toast.fail("上传失败！");
+              }
+        });
+    },
+    onDelete(data, idxData){
+      this.imgUrlList.splice(idxData.index, 1);
+    }
   }
 }
 </script>

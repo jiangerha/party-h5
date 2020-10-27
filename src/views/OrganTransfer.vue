@@ -6,7 +6,7 @@
         readonly
         clickable
         name="type"
-        :value="formData.type"
+        :value="(typeList[formData.type] || {}).text"
         label="转出类型："
         placeholder="请选择转出类型"
         @click="showType = true"
@@ -20,7 +20,7 @@
         />
       </van-popup>
       <van-field
-        v-model="formData.unit"
+        v-model="formData.toOrgName"
         clearable
         name="去往单位"
         label="去往单位："
@@ -31,7 +31,7 @@
         readonly
         clickable
         name="转出形式"
-        :value="formData.transferForm"
+        :value="(formList[formData.form] || {}).text"
         label="转出形式："
         placeholder="请选择转出形式"
         @click="showTransferForm = true"
@@ -45,7 +45,7 @@
         />
       </van-popup>
       <van-field
-        v-model="formData.letter"
+        v-model="formData.toOrgTitle"
         clearable
         name="介绍信抬头"
         label="介绍信抬头："
@@ -56,7 +56,7 @@
         readonly
         clickable
         name="转出原因"
-        :value="formData.reason"
+        :value="(reasonList[formData.reason] || {}).text"
         label="转出原因："
         placeholder="请选择转出原因"
         @click="showTransferReason = true"
@@ -69,6 +69,14 @@
           @cancel="showTransferReason = false"
         />
       </van-popup>
+      <van-field
+        v-if="formData.reason == '2'"
+        v-model="formData.otherReason"
+        clearable
+        name="其他原因"
+        label="其他原因"
+        placeholder="请输入其他原因"
+      />
       <div class="footer">
         <van-button native-type="submit">
           提 交
@@ -90,22 +98,35 @@
 
 <script>
 // @ is an alias to /src
-const typeList = ['正常', '异常'];
-const formList = ['纸质'];
-const reasonList = ['升学'];
+import $axios from '@/utils/httpUtil';
+import { Toast } from 'vant';
+const typeList = [
+  { text: '正常', id:0},
+  { text: '异常', id:1}
+];
+// const typeList = ['正常', '异常'];
+// const formList = ['纸质', '电子'];
+const formList = [
+  { text: '纸质', id:0},
+  { text: '电子', id:1}
+];
+// const reasonList = ['升学', '工作', '其他'];
+const reasonList = [
+  { text: '升学', id:0},
+  { text: '工作', id:1},
+  { text: '其他', id:2},
+];
 export default {
   name: 'OrganTransfer',
   components: {
   },
   data(){
       return{
-        isCheck:true,//是否审核
+        isCheck:false,//是否审核
         showType:false,
         showTransferReason:false,
         showTransferForm:false,
-        formData:{
-            result:""
-        },
+        formData:{},
         typeList,
         formList,
         reasonList,
@@ -117,14 +138,25 @@ export default {
       onSubmit(){
 
       },
-      onSelecType(){
-
+      onSelecType(val){
+        this.formData.type = val.id;
+        this.showType = false;
       },
-      onSelecForm(){
-
+      onSelecForm(val){
+        this.formData.form = val.id;
+        this.showTransferForm = false;
       },
-      onSeleReason(){
-
+      onSeleReason(val){
+        this.formData.reason = val.id;
+        this.showTransferReason = false;
+        this.formData.reason != 2 && (this.formData.otherReason = '');
+      },
+      getInfo(){
+        $axios.postWithLoading('/app/transport/status').then(res => {
+              this.formData = res.data;
+          }).catch(err => {
+              console.log(err)       
+          })
       }
   }
 }

@@ -50,11 +50,6 @@ export default {
           return this.initQuery && this.list.length === 0;
       }
   },
-  watch:{
-      list(val, newVal){
-          console.log(val, newVal, '------')
-      }
-  },
   methods: {
     getCheckData() {
         this.initQuery = true;
