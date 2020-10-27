@@ -55,6 +55,7 @@
         <van-area
           :area-list="areaList"
           :columns-num="2"
+          :value="defaultProvince"
           @confirm="onPickProvince"
           @cancel="showProvincePicker = false"
         />
@@ -251,6 +252,9 @@ import { Toast } from 'vant';
 const educationList = ['本科', '硕士研究生', '博士研究生', '其他'];
 const genderList = ['男', '女'];
 const memberJobList = ['在职教职工', '离退休教职工', '本科生', '硕士研究生', '博士研究生', '其他'];
+let findKey = (value, compare = (a, b) => a === b) =>{
+    return Object.keys(areaList.city_list).find(k => compare(areaList.city_list[k], value))
+}
 export default {
   name: 'Personal',
   data(){
@@ -308,15 +312,20 @@ export default {
       this.unitData.filter((i, index) => i.id === this.infoData.memberUnit && (idx = index));
       return idx;
     },
+    defaultProvince(){
+      console.log(this.infoData)
+      return findKey(this.infoData.memberCity);
+    },
     originText(){
       const { memberProvince, memberCity } = this.infoData;
-      return `${memberProvince} ${memberCity}`
+      return `${memberProvince || ''} ${memberCity || ''}`
     }
   },
   methods:{
       /**
        * 获取info
        */
+      
       getDataInfo(){
         $axios.postWithLoading('/app/member/detail').then(res => {
             this.infoData = res.data;
@@ -338,7 +347,6 @@ export default {
       },
       onPickProvince(data){
         this.showProvincePicker = false;
-        console.log(data)
         this.infoData.memberProvince = data[0].name;
         this.infoData.memberCity = data[1].name;
       },
