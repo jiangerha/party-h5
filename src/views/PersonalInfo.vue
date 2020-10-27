@@ -46,7 +46,7 @@
         readonly
         clickable
         name="籍贯"
-        :value="infoData.memberProvince"
+        :value="originText"
         label="籍贯："
         placeholder="请输入籍贯"
         @click="isEdit ? showProvincePicker = true : null"
@@ -307,6 +307,10 @@ export default {
       let idx = 0;
       this.unitData.filter((i, index) => i.id === this.infoData.memberUnit && (idx = index));
       return idx;
+    },
+    originText(){
+      const { memberProvince, memberCity } = this.infoData;
+      return `${memberProvince} ${memberCity}`
     }
   },
   methods:{
