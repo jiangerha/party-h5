@@ -197,12 +197,23 @@
       </van-popup>
       <van-field
         v-model="infoData.memberIsLeader"
-        :readonly="!isEdit"
+        clickable
+        readonly
         name="是否干部"
         label="是否干部："
         placeholder="请选择是否干部"
         :rules="[{ required: true, message: '请选择是否干部' }]"
+        @click="isEdit ? showMemberIsLeader = true : null"
       />
+      <van-popup v-if="isEdit" v-model="showMemberIsLeader" position="bottom">
+        <van-picker
+          show-toolbar
+          :default-index="isLeaderList.indexOf(infoData.memberIsLeader)"
+          :columns="isLeaderList"
+          @confirm="onSelectMemberIsLeader"
+          @cancel="showMemberIsLeader = false"
+        />
+      </van-popup>
       <van-field
         v-model="infoData.jobNumber"
         :readonly="!isEdit"
@@ -249,6 +260,7 @@ import $axios from '@/utils/httpUtil';
 import moment from 'moment';
 import areaList from '@/utils/area'
 import { Toast } from 'vant';
+const isLeaderList = ['是', '否'];
 const educationList = ['本科', '硕士研究生', '博士研究生', '其他'];
 const genderList = ['男', '女'];
 const memberJobList = ['在职教职工', '离退休教职工', '本科生', '硕士研究生', '博士研究生', '其他'];
@@ -277,8 +289,9 @@ export default {
           showFomalPicker:false,
           showEduc:false,//文化程度
           showMemberJob:false,//人员类别
+          showMemberIsLeader:false,//是否干部
           educationList,//教育程度list
-          isEdit:true,//是否编辑
+          isEdit:false,//是否编辑
           showGender:false,//性别
           showMemberUnit:false,//行政机构
           genderList,
@@ -288,6 +301,7 @@ export default {
           maxDate:new Date(),
           minDate: new Date(1900, 1, 1),
           unitData:[],//行政机构下拉数据
+          isLeaderList
       }
   },
   created(){
@@ -392,6 +406,10 @@ export default {
       onSelectGender(val){
         this.showGender = false;
         this.infoData.memberSex = val;
+      },
+      onSelectMemberIsLeader(val){
+        this.showMemberIsLeader = false;
+        this.infoData.memberIsLeader = val;
       },
       getFormatDate(date){
         const t = Date.parse(date);  

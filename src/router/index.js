@@ -2,15 +2,16 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
+import Cookies from 'js-cookie';
+
+const token = Cookies.get('token');
 
 Vue.use(VueRouter)
-
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: Home
-  // },
+  {
+    path: '/',
+    redirect:token ? '/personal' : '/login'
+  },
   {
     path: '/login',
     name: 'Login',
