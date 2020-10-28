@@ -1,250 +1,253 @@
 <template>
   <div class="personal-page">
      <van-form class="info-form" @submit="onSubmit">
-       <van-cell title="所属党组织：" :value="orgText" />
-      <van-field
-        :class="infoData.auditStatus === 0 ? 'orange-text' : infoData.auditStatus === 1 ? 'green-text' : 'red-text'"
-        v-model="statusText"
-        readonly
-        name="修改状态"
-        label="修改状态："
-      />
-      <van-field
-        v-model="infoData.memberName"
-        :readonly="!isEdit"
-        name="姓名"
-        label="姓名："
-        placeholder="请输入姓名"
-        :rules="[{ required: true, message: '请输入姓名' }]"
-      />
-      <van-field
-        readonly
-        name="性别"
-        :value="infoData.memberSex"
-        label="性别"
-        placeholder="请选择性别"
-        @click="isEdit ? showGender = true : null"
-      />
-      <van-popup v-if="isEdit" v-model="showGender" position="bottom">
-        <van-picker
-          show-toolbar
-          :columns="genderList"
-          :default-index="genderList.indexOf(infoData.memberSex)"
-          @confirm="onSelectGender"
-          @cancel="showGender = false"
+       <van-cell-group class="field-group">
+         <van-cell title="所属党组织：" :value="orgText" />
+        <van-field
+          :class="infoData.auditStatus === 0 ? 'orange-text' : infoData.auditStatus === 1 ? 'green-text' : 'red-text'"
+          v-model="statusText"
+          readonly
+          name="修改状态"
+          label="修改状态："
         />
-      </van-popup>
-      <van-field
-        v-model="infoData.memberEthnicity"
-        :readonly="!isEdit"
-        name="民族"
-        label="民族："
-        placeholder="请输入民族"
-        :rules="[{ required: true, message: '请输入民族' }]"
-      />
-      <van-field
-        readonly
-        clickable
-        name="籍贯"
-        :value="originText"
-        label="籍贯："
-        placeholder="请输入籍贯"
-        @click="isEdit ? showProvincePicker = true : null"
-      />
-      <van-popup v-if="isEdit" v-model="showProvincePicker" position="bottom">
-        <van-area
-          :area-list="areaList"
-          :columns-num="2"
-          :value="defaultProvince"
-          @confirm="onPickProvince"
-          @cancel="showProvincePicker = false"
+        <van-field
+          v-model="infoData.memberName"
+          :readonly="!isEdit"
+          name="姓名"
+          label="姓名："
+          placeholder="请输入姓名"
+          :rules="[{ required: true, message: '请输入姓名' }]"
         />
-      </van-popup>
-      <van-field
-        readonly
-        clickable
-        name="出生年月"
-        :value="infoData.memberBirthday"
-        label="出生年月"
-        placeholder="点击选择出生年月"
-        @click="isEdit ? showBirthPicker = true : null"
-      />
-      <van-popup v-if="isEdit" v-model="showBirthPicker" position="bottom">
-        <van-datetime-picker
-          type="date"
-          :value="getFormatDate(infoData.memberBirthday)"
-          :min-date="minDate"
-          :max-date="maxDate"
-          @confirm="onPickBirthDay"
-          @cancel="showBirthPicker = false"
+        <van-field
+          readonly
+          name="性别"
+          :value="infoData.memberSex"
+          label="性别"
+          placeholder="请选择性别"
+          @click="isEdit ? showGender = true : null"
         />
-      </van-popup>
-      <van-field
-        readonly
-        clickable
-        name="入党时间"
-        :value="infoData.memberJoinDate"
-        label="入党时间"
-        placeholder="点击选择入党时间"
-        @click="isEdit ? showJoinPicker = true : null"
-      />
-      <van-popup v-if="isEdit" v-model="showJoinPicker" position="bottom">
-        <van-datetime-picker
-          type="date"
-          :value="getFormatDate(infoData.memberJoinDate)"
-          :min-date="minDate"
-          :max-date="maxDate"
-          @confirm="onPickMemberDate"
-          @cancel="showJoinPicker = false"
+        <van-popup v-if="isEdit" v-model="showGender" position="bottom">
+          <van-picker
+            show-toolbar
+            :columns="genderList"
+            :default-index="genderList.indexOf(infoData.memberSex)"
+            @confirm="onSelectGender"
+            @cancel="showGender = false"
+          />
+        </van-popup>
+        <van-field
+          v-model="infoData.memberEthnicity"
+          :readonly="!isEdit"
+          name="民族"
+          label="民族："
+          placeholder="请输入民族"
+          :rules="[{ required: true, message: '请输入民族' }]"
         />
-      </van-popup>
-      <van-field
-        readonly
-        clickable
-        name="datetimePicker"
-        :value="infoData.memberFomalDate"
-        label="转正时间"
-        placeholder="点击选择转正时间"
-        @click="isEdit ? showFomalPicker = true : null"
-      />
-      <van-popup v-if="isEdit" v-model="showFomalPicker" position="bottom">
-        <van-datetime-picker
-          type="date"
-          :min-date="minDate"
-          :max-date="maxDate"
-          :value="getFormatDate(infoData.memberFomalDate)"
-          @confirm="onPickFomalDate"
-          @cancel="showFomalPicker = false"
+        <van-field
+          readonly
+          clickable
+          name="籍贯"
+          :value="originText"
+          label="籍贯："
+          placeholder="请输入籍贯"
+          @click="isEdit ? showProvincePicker = true : null"
         />
-      </van-popup>
-      <van-field
-        v-model="infoData.memberPhoneNumber"
-        :readonly="!isEdit"
-        name="联系电话"
-        label="联系电话："
-        placeholder="请输入联系电话"
-        :rules="[{ required: true, message: '请输入联系电话' }]"
-      />
-      <van-field
-        v-model="infoData.memberIdentity"
-        :readonly="!isEdit"
-        name="身份证号"
-        label="身份证号："
-        placeholder="请输入身份证号"
-        :rules="[{ required: true, message: '请输入身份证号' }]"
-      />
-      <van-field
-        readonly
-        clickable
-        name="picker"
-        :value="infoData.memberDegree"
-        label="文化程度"
-        placeholder="请选择文化程度"
-        @click="isEdit ? showEduc = true : null"
-      />
-      <van-field
-        v-model="infoData.memberAddress"
-        :readonly="!isEdit"
-        name="家庭住址"
-        label="家庭住址："
-        placeholder="请输入家庭住址"
-        :rules="[{ required: true, message: '请输入家庭住址' }]"
-      />
-      <van-field
-        v-model="infoData.memberJob"
-        readonly
-        clickable
-        name="人员类别"
-        label="人员类别："
-        placeholder="请选择人员类别"
-        @click="isEdit ? showMemberJob = true : null"
-        :rules="[{ required: true, message: '请选择人员类别' }]"
-      />
-      <van-popup v-if="isEdit" v-model="showMemberJob" position="bottom">
-        <van-picker
-          show-toolbar
-          :columns="memberJobList"
-          @confirm="onSelectMemberJob"
-          @cancel="showMemberJob = false"
+        <van-popup v-if="isEdit" v-model="showProvincePicker" position="bottom">
+          <van-area
+            :area-list="areaList"
+            :columns-num="2"
+            :value="defaultProvince"
+            @confirm="onPickProvince"
+            @cancel="showProvincePicker = false"
+          />
+        </van-popup>
+        <van-field
+          readonly
+          clickable
+          name="出生年月"
+          :value="infoData.memberBirthday"
+          label="出生年月"
+          placeholder="点击选择出生年月"
+          @click="isEdit ? showBirthPicker = true : null"
         />
-      </van-popup>
-      <van-field
-        v-model="infoData.memberMailbox"
-        :readonly="!isEdit"
-        name="邮箱"
-        label="邮箱："
-        placeholder="请输入邮箱"
-        :rules="[{ required: true, message: '请输入邮箱' }]"
-      />
-      <van-field
-        v-model="unitName"
-        readonly
-        clickable
-        name="行政机构"
-        label="行政机构："
-        placeholder="请选择行政机构"
-        :rules="[{ required: true, message: '请选择行政机构' }]"
-        @click="isEdit ? showMemberUnit = true : null"
-      />
-      <van-popup v-if="isEdit" v-model="showMemberUnit" position="bottom">
-        <van-picker
-          show-toolbar
-          :default-index="defaultMemberUnit"
-          :columns="unitData"
-          @confirm="onSelectMemberUnit"
-          @cancel="showMemberUnit = false"
+        <van-popup v-if="isEdit" v-model="showBirthPicker" position="bottom">
+          <van-datetime-picker
+            type="date"
+            :value="getFormatDate(infoData.memberBirthday)"
+            :min-date="minDate"
+            :max-date="maxDate"
+            @confirm="onPickBirthDay"
+            @cancel="showBirthPicker = false"
+          />
+        </van-popup>
+        <van-field
+          readonly
+          clickable
+          name="入党时间"
+          :value="infoData.memberJoinDate"
+          label="入党时间"
+          placeholder="点击选择入党时间"
+          @click="isEdit ? showJoinPicker = true : null"
         />
-      </van-popup>
-      <van-field
-        v-model="infoData.memberIsLeader"
-        clickable
-        readonly
-        name="是否干部"
-        label="是否干部："
-        placeholder="请选择是否干部"
-        :rules="[{ required: true, message: '请选择是否干部' }]"
-        @click="isEdit ? showMemberIsLeader = true : null"
-      />
-      <van-popup v-if="isEdit" v-model="showMemberIsLeader" position="bottom">
-        <van-picker
-          show-toolbar
-          :default-index="isLeaderList.indexOf(infoData.memberIsLeader)"
-          :columns="isLeaderList"
-          @confirm="onSelectMemberIsLeader"
-          @cancel="showMemberIsLeader = false"
+        <van-popup v-if="isEdit" v-model="showJoinPicker" position="bottom">
+          <van-datetime-picker
+            type="date"
+            :value="getFormatDate(infoData.memberJoinDate)"
+            :min-date="minDate"
+            :max-date="maxDate"
+            @confirm="onPickMemberDate"
+            @cancel="showJoinPicker = false"
+          />
+        </van-popup>
+        <van-field
+          readonly
+          clickable
+          name="datetimePicker"
+          :value="infoData.memberFomalDate"
+          label="转正时间"
+          placeholder="点击选择转正时间"
+          @click="isEdit ? showFomalPicker = true : null"
         />
-      </van-popup>
-      <van-field
-        v-model="infoData.jobNumber"
-        :readonly="!isEdit"
-        name="工号"
-        label="工号："
-        placeholder="请输入工号"
-        :rules="[{ required: true, message: '请输入工号' }]"
-      />
-      <van-field
-        v-model="infoData.authNumber"
-        :readonly="!isEdit"
-        name="统一身份认证号码"
-        label="统一身份认证号码："
-        placeholder="请输入统一身份认证号码"
-        :rules="[{ required: true, message: '请输入统一身份认证号码' }]"
-      />
-      <van-field
-        v-model="infoData.fee"
-        :readonly="!isEdit"
-        name="党费标准"
-        label="党费标准："
-      />
-      <van-popup v-if="isEdit" v-model="showEduc" position="bottom">
-        <van-picker
-          show-toolbar
-          :default-index="educationList.indexOf(infoData.memberDegree)"
-          :columns="educationList"
-          @confirm="onSelectEduc"
-          @cancel="showEduc = false"
+        <van-popup v-if="isEdit" v-model="showFomalPicker" position="bottom">
+          <van-datetime-picker
+            type="date"
+            :min-date="minDate"
+            :max-date="maxDate"
+            :value="getFormatDate(infoData.memberFomalDate)"
+            @confirm="onPickFomalDate"
+            @cancel="showFomalPicker = false"
+          />
+        </van-popup>
+        <van-field
+          v-model="infoData.memberPhoneNumber"
+          :readonly="!isEdit"
+          name="联系电话"
+          label="联系电话："
+          placeholder="请输入联系电话"
+          :rules="[{ required: true, message: '请输入联系电话' }]"
         />
-      </van-popup>
+        <van-field
+          v-model="infoData.memberIdentity"
+          :readonly="!isEdit"
+          name="身份证号"
+          label="身份证号："
+          placeholder="请输入身份证号"
+          :rules="[{ required: true, message: '请输入身份证号' }]"
+        />
+        <van-field
+          readonly
+          clickable
+          name="picker"
+          :value="infoData.memberDegree"
+          label="文化程度"
+          placeholder="请选择文化程度"
+          @click="isEdit ? showEduc = true : null"
+        />
+        <van-field
+          v-model="infoData.memberAddress"
+          :readonly="!isEdit"
+          name="家庭住址"
+          label="家庭住址："
+          placeholder="请输入家庭住址"
+          :rules="[{ required: true, message: '请输入家庭住址' }]"
+        />
+        <van-field
+          v-model="infoData.memberJob"
+          readonly
+          clickable
+          name="人员类别"
+          label="人员类别："
+          placeholder="请选择人员类别"
+          @click="isEdit ? showMemberJob = true : null"
+          :rules="[{ required: true, message: '请选择人员类别' }]"
+        />
+        <van-popup v-if="isEdit" v-model="showMemberJob" position="bottom">
+          <van-picker
+            show-toolbar
+            :columns="memberJobList"
+            @confirm="onSelectMemberJob"
+            @cancel="showMemberJob = false"
+          />
+        </van-popup>
+        <van-field
+          v-model="infoData.memberMailbox"
+          :readonly="!isEdit"
+          name="邮箱"
+          label="邮箱："
+          placeholder="请输入邮箱"
+          :rules="[{ required: true, message: '请输入邮箱' }]"
+        />
+        <van-field
+          v-model="unitName"
+          readonly
+          clickable
+          name="行政机构"
+          label="行政机构："
+          placeholder="请选择行政机构"
+          :rules="[{ required: true, message: '请选择行政机构' }]"
+          @click="isEdit ? showMemberUnit = true : null"
+        />
+        <van-popup v-if="isEdit" v-model="showMemberUnit" position="bottom">
+          <van-picker
+            show-toolbar
+            :default-index="defaultMemberUnit"
+            :columns="unitData"
+            @confirm="onSelectMemberUnit"
+            @cancel="showMemberUnit = false"
+          />
+        </van-popup>
+        <van-field
+          v-model="infoData.memberIsLeader"
+          clickable
+          readonly
+          name="是否干部"
+          label="是否干部："
+          placeholder="请选择是否干部"
+          :rules="[{ required: true, message: '请选择是否干部' }]"
+          @click="isEdit ? showMemberIsLeader = true : null"
+        />
+        <van-popup v-if="isEdit" v-model="showMemberIsLeader" position="bottom">
+          <van-picker
+            show-toolbar
+            :default-index="isLeaderList.indexOf(infoData.memberIsLeader)"
+            :columns="isLeaderList"
+            @confirm="onSelectMemberIsLeader"
+            @cancel="showMemberIsLeader = false"
+          />
+        </van-popup>
+        <van-field
+          v-model="infoData.jobNumber"
+          :readonly="!isEdit"
+          name="工号"
+          label="工号："
+          placeholder="请输入工号"
+          :rules="[{ required: true, message: '请输入工号' }]"
+        />
+        <van-field
+          v-model="infoData.authNumber"
+          :readonly="!isEdit"
+          name="统一身份认证号码"
+          label="统一身份认证号码："
+          placeholder="请输入统一身份认证号码"
+          :rules="[{ required: true, message: '请输入统一身份认证号码' }]"
+        />
+        <van-field
+          v-model="infoData.fee"
+          :readonly="!isEdit"
+          name="党费标准"
+          label="党费标准："
+        />
+        <van-popup v-if="isEdit" v-model="showEduc" position="bottom">
+          <van-picker
+            show-toolbar
+            :default-index="educationList.indexOf(infoData.memberDegree)"
+            :columns="educationList"
+            @confirm="onSelectEduc"
+            @cancel="showEduc = false"
+          />
+        </van-popup>
+       </van-cell-group>
+       
       <div v-if="btnText" class="footer">
         <van-button native-type="submit">
           {{btnText}}
@@ -427,7 +430,15 @@ export default {
   .personal-page{
     width: 100vw;
     height: 100vh;
+    position: relative;
+    overflow-x: hidden;
     .info-form{
+      height: calc(100% - 128px);
+      padding-bottom: 128px;
+      .field-group{
+        height: 100%;
+        overflow-y: auto;
+      }
       .van-cell{
         padding: 0 24px;
         height: 88px;
