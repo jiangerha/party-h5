@@ -118,6 +118,7 @@ export default {
         height: 88px;
         padding: 0 24px;
         line-height: 88px;
+        font-size:34px;
         ::v-deep .van-field__value{
             text-align: right;
         }
@@ -157,7 +158,7 @@ export default {
             height: 30px;
         }
         ::v-deep .van-uploader__preview-delete-icon{
-            font-size: 30px;
+            font-size: 34px;
         }
         ::v-deep .van-uploader__upload-icon{
             font-size: 80px;
@@ -170,7 +171,7 @@ export default {
             margin: 80px 24px;
             background: #FEAC32;
             border-radius: 16px;
-            font-size: 34px;
+            font-size: 36px;
             color: #fff;
         }
     }

@@ -372,6 +372,7 @@ export default {
         height: 88px;
         padding: 0 24px;
         line-height: 88px;
+        font-size:34px;
         ::v-deep .van-field__value{
             text-align: right;
         }
@@ -424,7 +425,7 @@ export default {
             margin: 80px 24px;
             background: #FEAC32;
             border-radius: 16px;
-            font-size: 34px;
+            font-size: 36px;
             color: #fff;
         }
     }
@@ -433,17 +434,19 @@ export default {
         ::v-deep .van-dialog__header{
             color: #333;
             line-height: 48px;
-            font-size: 34px;
+            font-size: 38px;
             padding: 40px 0 20px 0;
         }
         ::v-deep .van-dialog__content{
             color: #666;
+            font-size: 34px;
             line-height: 48px;
             text-align: left;
             padding: 0 40px;
             padding-bottom: 40px;
         }
         ::v-deep .van-button__content{
+            font-size: 34px;
             line-height: 60px;
         }
     }

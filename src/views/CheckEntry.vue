@@ -109,7 +109,7 @@ export default {
         .van-cell{
             height: 88px;
             line-height: 88px;
-            font-size: 28px;
+            font-size: 34px;
             padding: 0 20px;
             
             &::after{
