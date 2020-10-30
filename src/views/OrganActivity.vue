@@ -131,10 +131,13 @@ export default {
         padding: 0;
         height: 68px;
         background: #F5F5F5;
-        font-size: 28px;
+        font-size: 34px;
         color: #999;
         .van-cell{
             height: 100%;
+        }
+        .van-search__action{
+            font-size: 34px;
         }
         ::v-deep .van-cell__value{
             padding: 0 24px;
@@ -145,6 +148,7 @@ export default {
         }
         ::v-deep .van-field__control{
             height: 68px;
+            font-size: 34px;
         }
     }
     .content-container{
@@ -160,7 +164,7 @@ export default {
         .van-cell{
             height: 88px;
             line-height: 88px;
-            font-size: 28px;
+            font-size: 34px;
             padding: 0 20px;
             &::after{
                 border-color: #E5E5E5;
@@ -175,6 +179,7 @@ export default {
         .item-title{
             background: #FAFAFA;
             color: #333;
+            font-size: 34px;
             &::after{
                 display: none;
             }

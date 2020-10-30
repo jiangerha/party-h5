@@ -443,7 +443,7 @@ export default {
         padding: 0 24px;
         height: 88px;
         line-height: 88px;
-        font-size: 24px;
+        font-size: 34px;
         &:first-child{
           background: #f7f7f7;
           height: auto;
@@ -458,12 +458,12 @@ export default {
         }
         ::v-deep .van-field__label{
           color: #999;
-          font-size: 24px;
+          font-size: 34px;
         }
         ::v-deep .van-field__control{
           text-align: right;
           color: #333;
-          font-size: 24px;
+          font-size: 34px;
         }
       }
       .orange-text{
@@ -496,7 +496,7 @@ export default {
         margin: 20px 24px;
         background: #FEAC32;
         border-radius: 16px;
-        font-size: 30px;
+        font-size: 36px;
         color: #fff;
       }
     }

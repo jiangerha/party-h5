@@ -56,7 +56,7 @@ export default {
       getDetailInfo(){
           $axios.postWithLoading('/app/meeting/detail', {id:this.id}).then(res => {
               this.detailData = res.data;
-              this.$refs.planDom.innerHTML = this.detailData.content;
+              this.$refs.planDom.innerHTML = (this.detailData.content || '').replace(/style="/g, '');
           }).catch(err => {
               console.log(err)       
           })
@@ -78,10 +78,10 @@ export default {
         line-height: 88px;
         background: #EDEDED;
         ::v-deep .van-nav-bar__title{
-            font-size: 34px;
+            font-size: 38px;
         }
         ::v-deep .van-nav-bar__text{
-            font-size: 34px;
+            font-size: 38px;
         }
     }
     .main-content{
@@ -93,7 +93,7 @@ export default {
         padding: 40px 24px 20px 24px;
         ::v-deep .van-cell__value{
             text-align: left;
-            font-size: 34px;
+            font-size: 38px;
             line-height: 48px;
         }
     }
@@ -105,7 +105,7 @@ export default {
     }
     .van-cell{
         padding: 0 24px;
-        font-size: 28px;
+        font-size: 34px;
         ::v-deep .van-cell__title{
             text-align: left;
             color: #999;
@@ -122,6 +122,7 @@ export default {
             line-height: 40px;
         }
         ::v-deep .van-cell__label{
+            font-size: 32px;
             padding-top: 20px;
             line-height: 40px;
             color: #333;
@@ -136,9 +137,13 @@ export default {
         .label-content{
             padding-top: 20px;
             color: #333!important;
-            font-size: 28px!important;
-            line-height: 48px!important;
+            font-size: 32px!important;
+            line-height: 40px!important;
             font-family: Microsoft YaHei!important;
+            span{
+                font-size: 32px!important;
+                line-height: 40px!important;
+            }
         }
     }
 }
