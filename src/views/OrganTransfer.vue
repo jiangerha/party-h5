@@ -421,7 +421,7 @@ export default {
     .footer{
         .van-button{
             width: calc(100% - 48px);
-            height: 98px;
+            height: 198px;
             margin: 80px 24px;
             background: #FEAC32;
             border-radius: 16px;
@@ -448,6 +448,10 @@ export default {
         ::v-deep .van-button__content{
             font-size: 34px;
             line-height: 60px;
+            color:blue;
+        }
+        .van-dialog__confirm{
+          line-height: 60px;
         }
     }
     .check-container{

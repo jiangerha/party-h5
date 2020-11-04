@@ -452,8 +452,10 @@ export default {
             color: #999;
           }
           ::v-deep .van-cell__value{
-            line-height: 40px;
+            line-height: 44px;
+            padding:15px 0px;
             color: #333;
+            text-align: left;
           }
         }
         ::v-deep .van-field__label{

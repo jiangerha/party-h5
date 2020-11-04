@@ -91,6 +91,9 @@ export default {
     .login-title{
         width: 67.2%;
     }
+    .van-field__control::placeholder{
+        color:#333333!important;
+    }
     .login-form{
         width: 100%;
         margin-top: 3.31vh;
@@ -113,7 +116,7 @@ export default {
             height: 98px;
             font-size: 34px;
             background: #E74933;
-            color: #fff;
+            color: rgba(255,255,255,1);
             border-radius: 16px;
         }
     }
