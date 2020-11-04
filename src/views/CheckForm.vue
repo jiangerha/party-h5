@@ -1,5 +1,11 @@
 <template>
   <div class="check-form-page">
+    <van-nav-bar
+    title="录入"
+    left-text="返回"
+    left-arrow
+    @click-left="onClickLeft"
+    />
     <van-form class="info-form" @submit="onSubmit">
       <van-field
         class="select-item"
@@ -104,6 +110,9 @@ export default {
     },
       onDelete(data, idxData){
         this.imgUrlList.splice(idxData.index, 1);
+      },
+      onClickLeft(){
+          window.location.hash = '/checkEntry';
       }
   }
 }

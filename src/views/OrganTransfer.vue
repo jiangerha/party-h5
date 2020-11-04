@@ -421,7 +421,7 @@ export default {
     .footer{
         .van-button{
             width: calc(100% - 48px);
-            height: 198px;
+            // height: 198px;
             margin: 80px 24px;
             background: #FEAC32;
             border-radius: 16px;

@@ -2,7 +2,7 @@
   <div class="personal-page">
      <van-form class="info-form" @submit="onSubmit">
        <van-cell-group class="field-group">
-         <van-cell title="所属党组织：" :value="orgText" />
+         <van-cell class="custom-field" title="所属党组织：" :value="orgText" />
         <van-field
           :class="infoData.auditStatus === 0 ? 'orange-text' : infoData.auditStatus === 1 ? 'green-text' : 'red-text'"
           v-model="statusText"
@@ -435,6 +435,16 @@ export default {
     .info-form{
       height: calc(100% - 128px);
       padding-bottom: 128px;
+      .custom-field{
+        ::v-deep .van-cell__title{
+          flex: unset;
+          width: 40%;
+          white-space: nowrap;
+        }
+        ::v-deep .van-cell__value{
+          flex: unset;
+        }
+      }
       .field-group{
         height: 100%;
         overflow-y: auto;
@@ -452,7 +462,7 @@ export default {
             color: #999;
           }
           ::v-deep .van-cell__value{
-            line-height: 44px;
+            line-height: 48px;
             padding:15px 0px;
             color: #333;
             text-align: left;

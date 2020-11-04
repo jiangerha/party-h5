@@ -5,6 +5,7 @@
         <img class="login-title" src="../assets/login-title.png" alt="title"/>
         <van-form class="login-form" @submit="loginFunc">
             <van-field
+                clearable
                 v-model="userInfo.username"
                 left-icon="contact"
                 name="用户名"
@@ -13,6 +14,7 @@
                 :rules="[{ required: true, message: '请输入您的账号' }]"
             />
             <van-field
+                clearable
                 v-model="userInfo.password"
                 type="password"
                 left-icon="lock"
@@ -22,7 +24,7 @@
                 :rules="[{ required: true, message: '请输入您的密码' }]"
             />
             <div class="btn-container">
-                <van-button round block native-type="submit">
+                <van-button :disabled="!userInfo.username || !userInfo.password" round block native-type="submit">
                 登录
                 </van-button>
             </div>
