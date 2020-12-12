@@ -9,7 +9,7 @@
                 v-model="userInfo.username"
                 left-icon="contact"
                 name="用户名"
-                placeholder="请输入您的账号"
+                placeholder="请输入您的身份证号码"
                 maxlength="20"
                 :rules="[{ required: true, message: '请输入您的账号' }]"
             />
