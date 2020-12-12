@@ -11,7 +11,7 @@
                 name="用户名"
                 placeholder="请输入您的身份证号码"
                 maxlength="20"
-                :rules="[{ required: true, message: '请输入您的账号' }]"
+                :rules="[{ required: true, message: '请输入您的身份证号码' }]"
             />
             <van-field
                 clearable
