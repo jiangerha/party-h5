@@ -33,7 +33,7 @@
             <div class="img-content">
                 <img src="../assets/login-other.png" alt=""/>
             </div>
-            <p>统一身份认证</p>
+            <p @click="redirectToLogin">统一身份认证</p>
         </div>
       </div>
   </div>
@@ -54,6 +54,9 @@ export default {
           }
       }
   },
+  created:function(){
+    this.authLogin();
+  },
   methods:{
       loginFunc(){
             $axios.postWithLoading('/app/login', this.userInfo).then(res => {
@@ -67,6 +70,32 @@ export default {
             }).catch(err => {
                 console.log(err)       
             })
+        },
+        redirectToLogin(){
+            const { href } = window.location || {};
+            if(href){
+                window.location = `http://authserver.cqu.edu.cn/authserver/login?service=${encodeURI(href)}`;
+            }
+        },
+        authLogin(){
+            const GetUrlParams = (name) => {
+                const reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+                const arr = window.location.search.substr(1).match(reg);
+                return arr ? unescape(arr[2]) : null
+            };
+            const ticket = GetUrlParams('ticket');
+            if(ticket){
+                $axios.postWithLoading('/app/cas-login', { ticket }).then(res => {
+                    if(res.code === 0){
+                        Cookies.set('token', res.data);
+                        setTimeout(() => {
+                            this.$router.push('/personal')
+                        }, 500)
+                    }
+                }).catch(err => {
+                    console.log(err)       
+                })
+            }
         }
     }
 }
