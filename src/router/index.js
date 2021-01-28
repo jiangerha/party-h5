@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Cookies from 'js-cookie';
 
@@ -49,6 +48,16 @@ const routes = [
     path: '/organTransfer',
     name: 'OrganTransfer',
     component: () => import(/* webpackChunkName: "OrganTransfer" */ '../views/OrganTransfer.vue')
+  },
+  {
+    path: '/partyFee',
+    name: 'PartyFee',
+    component: () => import(/* webpackChunkName: "PartyFee" */ '../views/partyFee.vue')
+  },
+  {
+    path: '/partyFeeDetail',
+    name: 'PartyFeeDetail',
+    component: () => import(/* webpackChunkName: "PartyFeeDetail" */ '../views/partyFeeDetail.vue')
   }
 ]
 
