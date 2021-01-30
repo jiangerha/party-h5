@@ -10,7 +10,7 @@
                 >
                     <div class="list-item" v-for="(i, idx) in list" :key="idx" @click="gotoDetail(i.id)">
                         <div class="title">{{i.orgName}}</div>
-                        <div class="fee">¥ {{i.fee}}</div>
+                        <div class="fee">¥ {{i.fee ? i.fee / 100 : i.fee || ''}}</div>
                         <div class="info">
                             <span>{{i.feeTypeName}}</span>
                             <span>{{i.endDate}}截止</span>
@@ -27,7 +27,7 @@
                 >
                     <div class="list-item" v-for="(i, idx) in payList" :key="idx" @click="gotoDetail(i.id)">
                         <div class="title">{{i.orgName}}</div>
-                        <div class="fee">¥ {{i.fee}}</div>
+                        <div class="fee">¥ {{i.fee ? i.fee / 100 : i.fee || ''}}</div>
                         <div class="info">
                             <span>{{i.feeTypeName}}</span>
                             <span>{{i.endDate}}截止</span>
