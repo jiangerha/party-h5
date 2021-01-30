@@ -1,16 +1,16 @@
 <template>
     <div class="party-fee-detail">
         <!-- <van-cell title="党员" value="周洪云" label="描述信息" /> -->
-        <van-cell title="党员" value="周洪云" />
-        <van-cell title="组织" value="阿撒撒打算大" />
-        <van-cell title="交费类型" value="大爱上" />
-        <van-cell title="缴费项目" value="谁说的话就是" />
+        <van-cell title="党员" :value="infoData.memberName" />
+        <van-cell title="组织" :value="infoData.orgName" />
+        <van-cell title="交费类型" :value="infoData.feeType" />
+        <van-cell title="缴费项目" :value="infoData.feeTypeName" />
         <van-cell value="">
             <template #title>
                 <span class="custom-title">交费明细</span><br/>
                 <div class="detail-info">
-                    <span class="left">2018-06</span>
-                    <span class="right">¥ 1.00</span>
+                    <span class="left">{{infoData.yearMonth}}</span>
+                    <span class="right">¥ {{infoData.fee}}</span>
                 </div>
             </template>
         </van-cell>
@@ -22,23 +22,64 @@
                 </div>
             </template>
         </van-cell>
-        <van-cell title="交费截止时间" value="2018-06-30" />
-        <van-cell title="交费金额" value="¥ 1.09" />
+        <van-cell title="交费截止时间" :value="infoData.endDate" />
+        <van-cell title="交费金额" :value="`¥${infoData.fee}`" />
         <div class="footer">
-            <van-button>
+            <van-button @click="onPayFee">
             微信支付
             </van-button>
       </div>
+
+      <form v-show="false" action="http://pay.cqu.edu.cn/payment/pay/mobileAppPay.action" id="payment_form">
+        <input ref="sign" id="sign" name="sign" :value="sign">
+        <input name="sysid" value="58">
+        <input name="subsysid" value="032">
+        <input ref="data" name="data" id="data" :value="data">
+    </form>
     </div>
 </template>
 <script>
+import $axios from '@/utils/httpUtil';
 export default {
     name:'partyFeeDetail',
     data(){
         return{
-            infoData:{
-
-            }
+            infoData:{},
+            sign:'',
+            data:''
+        }
+    },
+    mounted(){
+        this.getInfoData();
+    },
+    methods:{
+        getInfoData(){
+            const { id } = this;
+            id && $axios.getWithLoading('/fee/member/fee-detail', {id}).then(res => {
+                this.infoData = res.data;
+            }).catch(err => {
+                console.log(err)       
+            })
+        },
+        onPayFee(){
+            const { id } = this;
+            id && $axios.postWithLoading('/fee/member/fee-transaction', {id:[id]}).then(res => {
+                const { data, sign } = (res || {}).data || {};
+                this.data = data;
+                this.sign = sign;
+                this.$nextTick(() => {
+                    const form = document.getElementById('payment_form');
+                    form.submit();
+                });
+                
+            }).catch(err => {
+                console.log(err)       
+            })
+        }
+    },
+    computed:{
+        id(){
+            return ((this.$route || {}).params || {}).id
         }
     }
 }

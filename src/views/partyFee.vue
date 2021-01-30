@@ -6,14 +6,14 @@
                 v-model="loading"
                 :finished="finished"
                 finished-text="没有更多了"
-                @load="onLoad"
+                @load="onLoad('0')"
                 >
-                    <div class="list-item" v-for="i in list" :key="i">
-                        <div class="title">{{i.title}}</div>
+                    <div class="list-item" v-for="(i, idx) in list" :key="idx" @click="gotoDetail(i.id)">
+                        <div class="title">{{i.orgName}}</div>
                         <div class="fee">¥ {{i.fee}}</div>
                         <div class="info">
-                            <span>{{i.descrip}}</span>
-                            <span>{{i.time}}截止</span>
+                            <span>{{i.feeTypeName}}</span>
+                            <span>{{i.endDate}}截止</span>
                         </div>
                     </div>
                 </van-list>
@@ -21,16 +21,16 @@
             <van-tab title="我已交费">
                 <van-list
                 v-model="loading"
-                :finished="finished"
+                :finished="payFinish"
                 finished-text="没有更多了"
-                @load="onLoad"
+                @load="onLoad('1')"
                 >
-                    <div class="list-item" v-for="i in list" :key="i">
-                        <div class="title">{{i.title}}</div>
+                    <div class="list-item" v-for="(i, idx) in payList" :key="idx" @click="gotoDetail(i.id)">
+                        <div class="title">{{i.orgName}}</div>
                         <div class="fee">¥ {{i.fee}}</div>
                         <div class="info">
-                            <span>{{i.descrip}}</span>
-                            <span>{{i.time}}截止</span>
+                            <span>{{i.feeTypeName}}</span>
+                            <span>{{i.endDate}}截止</span>
                         </div>
                     </div>
                 </van-list>
@@ -39,39 +39,59 @@
     </div>
 </template>
 <script>
+import $axios from '@/utils/httpUtil';
 export default {
     name:'partyFee',
     data(){
         return{
             activeTab:'',
             list: [],
+            payList:[],
             loading: false,
+            payLoading:false,
             finished: false,
+            payFinish:false,
+            page:0,
+            payPage:0,
+            count:0,
+            payCount:0
         }
     },
     methods: {
-    onLoad() {
+    onLoad(already) {
       // 异步更新数据
       // setTimeout 仅做示例，真实场景中一般为 ajax 请求
+      const listName = already === '1' ? 'payList' : 'list';
+      const pageName = already === '1' ? 'payPage' : 'page';
+      const countName = already === '1' ? 'payCount' : 'count';
+      const finishName = already === '1' ? 'payFinish' : 'finished';
       setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push({
-              title:'2018年党费缴费通知',
-              fee:this.list.length + 1,
-              descrip:'党费',
-              time:'2018-6-30 10:00'
-          });
-        }
+        $axios.get('/fee/member/list', {
+            limit:10,
+            page:this[pageName] + 1,
+            already
+        }).then(res => {
+            const { pageData, count, pageNow } = (res || {}).data || {};
+            this[listName] = this[listName].concat(pageData || []);
+            this[pageName] = pageNow || 1;
+            this[countName] = count || 0;
+          }).catch(err => {
+              console.log(err)       
+          })
 
         // 加载状态结束
         this.loading = false;
-
+        
+        console.log(this[listName], this[countName], this[listName].length >= this[countName], 'this[listName].length >= this[countName]')
         // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true;
+        if (this[listName].length >= this[countName]) {
+          this[finishName] = true;
         }
       }, 1000);
     },
+    gotoDetail(id){
+        id && this.$router.push(`/partyFeeDetail/${id}`)
+    }
   }
 }
 </script>

@@ -78,9 +78,9 @@ class Request {
       if (code === 401) {
         Cookies.set('token', '');
         Toast('登录失效，请重新登录');
-        // setTimeout(() => {
-        //   window.location.hash = '/login';
-        // }, 50)
+        setTimeout(() => {
+          window.location.hash = '/login';
+        }, 50)
         return {};
       } else if (code !== 0) {
         message && Toast.fail(message);
