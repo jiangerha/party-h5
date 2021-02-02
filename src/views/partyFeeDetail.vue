@@ -24,7 +24,7 @@
                 </div>
             </template>
         </van-cell>
-        <van-cell title="交费截止时间" :value="infoData.endDate" />
+        <!-- <van-cell title="交费截止时间" :value="infoData.endDate" /> -->
         <van-cell title="交费金额" :value="`¥${infoData.fee ? infoData.fee / 100 : infoData.fee || ''}`" />
         <div v-if="infoData.state == '0'" class="footer">
                 <van-button @click="onPayFee">

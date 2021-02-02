@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { Toast } from 'vant';
 
-const BaseURL = 'http://49.235.194.110:9007';
+const BaseURL = 'http://dj.cqu.edu.cn/api';
 
 /**
  * 封装axios请求
@@ -11,7 +11,7 @@ class Request {
   constructor() {
     // 初始化axios
     this.axios = axios.create({
-    //   baseURL: BaseURL,
+      // baseURL: BaseURL,
       baseURL: '/api',
       withCredentials: true,  // 跨域请求时是否需要使用凭证
       timeout: 10000,  // 默认超时时间10秒

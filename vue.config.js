@@ -61,7 +61,7 @@ module.exports = {   // 选项
             
         proxy: {
             '/api': {
-                target: 'http://49.235.194.110:9007',
+                target: 'http://dj.cqu.edu.cn/api',
                 ws: true,
                 secure: false,
                 changeOrigin: true,
