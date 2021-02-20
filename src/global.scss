@@ -24,3 +24,9 @@ p {
 .van-field--error .van-field__control::placeholder {
     caret-color: #333333;
 }
+.van-field__control{
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
+}

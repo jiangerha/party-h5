@@ -1,7 +1,7 @@
 <template>
     <div class="party-fee-page">
         <van-tabs v-model="activeTab">
-            <van-tab title="待我交费">
+            <van-tab title="待交党费">
                 <van-list
                 v-model="loading"
                 :finished="finished"
@@ -18,7 +18,7 @@
                     </div>
                 </van-list>
             </van-tab>
-            <van-tab title="我已交费">
+            <van-tab title="已交党费">
                 <van-list
                 v-model="loading"
                 :finished="payFinish"

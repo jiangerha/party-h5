@@ -96,6 +96,10 @@ export default {
     ::v-deep .van-cell__value{
         font-size: 34px;
         color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 100%;
+        text-overflow: ellipsis;
     }
     .detail-info{
         width: calc(200% - 48px);
