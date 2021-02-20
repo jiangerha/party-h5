@@ -44,7 +44,7 @@ export default {
     name:'partyFee',
     data(){
         return{
-            activeTab:'',
+            activeTab:0,
             list: [],
             payList:[],
             loading: false,
@@ -92,6 +92,11 @@ export default {
     gotoDetail(id){
         id && this.$router.push(`/partyFeeDetail/${id}`)
     }
+  },
+  watch:{
+      activeTab(newVal){
+          this.onLoad((newVal || 0).toString());
+      }
   }
 }
 </script>
